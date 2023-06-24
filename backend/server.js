@@ -53,6 +53,23 @@ app.post("/api/transactions", async (req, res) => {
 		res.status(500).json({ error: "Internal server error" });
 	}
 });
+app.put("/api/transactions/", async (req, res) => {
+	const { description, amount, subCategory, id } = req.body;
+	try {
+		const transaction = await Transaction.findByIdAndUpdate(
+			id,
+			{ description, amount, subCategory },
+			{ new: true }
+		);
+		if (!transaction) {
+			return res.status(404).json({ error: "Transaction not found" });
+		}
+		res.json(transaction);
+	} catch (error) {
+		console.error("Error updating transaction:", error);
+		res.status(500).json({ error: "Internal server error" });
+	}
+});
 
 app.delete("/api/transactions/:id", async (req, res) => {
 	const { id } = req.params;
